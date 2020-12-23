@@ -14,3 +14,4 @@ _Click for demo ↓_
 - [ ] Selectable build options - right now it only exports an .exe, but it should be easy to expand to .dlls and choose arch (x86 vs x64)
 - [X] Add option to supply an optional public IP address - right now it checks to see what local interface you want to run the server on. Stage0 had to be edited manually when hosted in Azure/AWS
 - [ ] Can this be an aggressor script? I don't know!
+- [ ] Add support for redirectors - obviously HTTP(S) needs to be implemented, but can we support socat or something?
