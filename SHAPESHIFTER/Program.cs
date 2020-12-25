@@ -31,6 +31,7 @@ namespace SHAPESHIFTER
             string _external = "";
             int _port = 0;
             string _shellcodeFile = "";
+            string _key = "";
 
             OptionSet options = new OptionSet()
             {
@@ -38,6 +39,7 @@ namespace SHAPESHIFTER
                 { "e|external-ip=", "Public IP address of your SHAPESHIFTER server. Must be quoted!", (string v)=> _external = v },
                 { "p|port=", "TCP port for the SHAPESHIFTER server", (int v) => _port = v },
                 { "s|shellcode=", "File containing the raw shellcode for Stage1. Must be quoted!", (string v) => _shellcodeFile = v },
+                { "k|key=", "Key for shellcode XOR. Must be quoted!", (string v) => _key = v },
                 { "h|help",  "Show this message and exit", v => _help = v != null }
 
             };
@@ -70,7 +72,7 @@ namespace SHAPESHIFTER
             }
 
             // Start the TCP server
-            Thread tcpServer = new Thread(() => TcpServer.ServerInit(_host, _port, _shellcodeFile));
+            Thread tcpServer = new Thread(() => TcpServer.ServerInit(_host, _port, _shellcodeFile, _key));
             tcpServer.Start();
 
             return;

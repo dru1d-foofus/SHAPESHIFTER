@@ -8,7 +8,7 @@ namespace SHAPESHIFTER
 {
     class TcpServer
     {
-        public static void ServerInit(string address, int port, string shellcodeFile)
+        public static void ServerInit(string address, int port, string shellcodeFile, string key)
         {
             IPAddress ip = null;
             try
@@ -57,7 +57,7 @@ namespace SHAPESHIFTER
                             }
                         }
 
-                        if (!Compiler.BuildStage1(hooks, shellcodeFile, clientId.ToString()))
+                        if (!Compiler.BuildStage1(hooks, shellcodeFile, clientId.ToString(),key))
                         {
                             Console.WriteLine("  [-] Failed to generate Stage1 source file");
                             break;

