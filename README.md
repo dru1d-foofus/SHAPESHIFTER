@@ -15,3 +15,7 @@ _Click for demo ↓_
 - [X] Add option to supply an optional public IP address - right now it checks to see what local interface you want to run the server on. Stage0 had to be edited manually when hosted in Azure/AWS
 - [ ] Can this be an aggressor script? I don't know!
 - [ ] Add support for redirectors - obviously HTTP(S) needs to be implemented, but can we support socat or something?
+
+# General Observations
+* **Stageless payloads are prefferred.** Staged payloads seem to be snagged by most EDR solutions I've tested against.
+* **Static keys suck.** Using environment variables seems to be the way to go that was you're not hardcoding a key into any of the .NET assemblies. However, my current implementation is actually doing no favors for avoid sandboxing, threat intel, etc. I think additional entropy needs to be added to the environment variable text.
