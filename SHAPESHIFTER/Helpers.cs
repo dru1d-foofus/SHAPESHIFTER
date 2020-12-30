@@ -25,6 +25,13 @@ namespace SHAPESHIFTER
             return new string(name) + ".exe";
         }
 
+        public static string KeyParser(byte[] results)
+        {
+            string keyString = Encoding.ASCII.GetString(results).Replace("\0", string.Empty);
+            char[] delimiter = { ':' };
+            string[] key = keyString.Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
+            return key[1];
+        }
         public static IList<string> ResultsParser(byte[] results)
         {
             IList<string> hookedFunctions = new List<string>();
